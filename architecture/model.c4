@@ -1,0 +1,216 @@
+// Starter spec, read from the code and traces by portal (no AI).
+// It says what exists. Add what the code can't: domains, your names,
+// rules, and what you plan to build.
+// Grouped into domains by hand; elements and connections are as read.
+// Conventions: https://portal.haris-d21.workers.dev/skills/portal-architecture/SKILL.md
+model {
+  storefront = domain 'Storefront' {
+    frontend_proxy = service 'frontend-proxy' {  // docker-compose.yml:326
+      metadata {
+        otel_service 'frontend-proxy'
+        resource 'frontend-proxy'
+      }
+    }
+    frontend = service 'frontend' {  // docker-compose.yml:259
+      metadata {
+        otel_service 'frontend'
+        resource 'frontend'
+      }
+    }
+    image_provider = service 'image-provider' {  // docker-compose.yml:373
+      metadata {
+        otel_service 'image-provider'
+        resource 'image-provider'
+      }
+    }
+    product_catalog = service 'product-catalog' {  // docker-compose.yml:472
+      metadata {
+        otel_service 'product-catalog'
+        resource 'product-catalog'
+      }
+    }
+    recommendation = service 'recommendation' {  // docker-compose.yml:535
+      metadata {
+        otel_service 'recommendation'
+        resource 'recommendation'
+      }
+    }
+    ad = service 'ad' {  // docker-compose.yml:48
+      metadata {
+        otel_service 'ad'
+        resource 'ad'
+      }
+    }
+    currency = service 'currency' {  // docker-compose.yml:171
+      metadata {
+        otel_service 'currency'
+        resource 'currency'
+      }
+    }
+  }
+  orders = domain 'Orders' {
+    cart = service 'cart' {  // docker-compose.yml:84
+      metadata {
+        otel_service 'cart'
+        resource 'cart'
+      }
+    }
+    valkey_cart = datastore 'valkey-cart' {  // docker-compose.yml:689
+      metadata {
+        resource 'valkey-cart'
+      }
+    }
+    checkout = service 'checkout' {  // docker-compose.yml:118
+      metadata {
+        otel_service 'checkout'
+        resource 'checkout'
+      }
+    }
+    payment = service 'payment' {  // docker-compose.yml:438
+      metadata {
+        otel_service 'payment'
+        resource 'payment'
+      }
+    }
+    shipping = service 'shipping' {  // docker-compose.yml:571
+      metadata {
+        otel_service 'shipping'
+        resource 'shipping'
+      }
+    }
+    quote = service 'quote' {  // docker-compose.yml:507
+      metadata {
+        otel_service 'quote'
+        resource 'quote'
+      }
+    }
+    email = service 'email' {  // docker-compose.yml:199
+      metadata {
+        otel_service 'email'
+        resource 'email'
+      }
+    }
+  }
+  events = domain 'Events and back office' {
+    kafka = event 'kafka' {  // docker-compose.yml:656
+      metadata {
+        otel_service 'kafka'
+        resource 'kafka'
+      }
+    }
+    accounting = service 'accounting' {  // docker-compose.yml:21
+      metadata {
+        otel_service 'accounting'
+        resource 'accounting'
+      }
+    }
+    fraud_detection = service 'fraud-detection' {  // docker-compose.yml:226
+      metadata {
+        otel_service 'fraud-detection'
+        resource 'fraud-detection'
+      }
+    }
+  }
+  platform = domain 'Platform' {
+    flagd = service 'flagd' {  // docker-compose.yml:601
+      metadata {
+        otel_service 'flagd'
+        resource 'flagd'
+      }
+    }
+    flagd_ui = service 'flagd-ui' {  // docker-compose.yml:629
+      metadata {
+        otel_service 'flagd-ui'
+        resource 'flagd-ui'
+      }
+    }
+    load_generator = service 'load-generator' {  // docker-compose.yml:400
+      metadata {
+        otel_service 'load-generator'
+        resource 'load-generator'
+      }
+    }
+    artillery_loadgen = service 'artillery-loadgen' {  // docker-compose.yml:810
+      metadata {
+        otel_service 'artillery-loadgen'
+        resource 'artillery-loadgen'
+      }
+    }
+  }
+  observability = domain 'Observability' {
+    otel_collector = infra 'otel-collector' {  // docker-compose.yml:733
+      metadata {
+        resource 'otel-collector'
+      }
+    }
+    hyperdx = infra 'hyperdx' {  // docker-compose.yml:768
+      metadata {
+        resource 'hyperdx'
+      }
+    }
+    clickhouse = datastore 'clickhouse' {  // docker-compose.yml:790
+      metadata {
+        resource 'clickhouse'
+      }
+    }
+    db = datastore 'db' {  // docker-compose.yml:725
+      metadata {
+        resource 'db'
+      }
+    }
+    grafana = infra 'grafana' {  // docker-compose.yml:707
+      metadata {
+        resource 'grafana'
+      }
+    }
+  }
+
+  accounting -[request]-> kafka  // env.KAFKA_ADDR
+  ad -[request]-> flagd  // env.FLAGD_HOST
+  cart -[request]-> flagd  // env.FLAGD_HOST
+  cart -> valkey_cart  // reads or writes? say which: -[reads]-> or -[writes]->
+  checkout -[request]-> flagd  // env.FLAGD_HOST
+  checkout -[request]-> cart  // env.CART_ADDR
+  checkout -[request]-> currency  // env.CURRENCY_ADDR
+  checkout -[request]-> email  // env.EMAIL_ADDR
+  checkout -[request]-> payment  // env.PAYMENT_ADDR
+  checkout -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  checkout -[request]-> shipping  // env.SHIPPING_ADDR
+  checkout -[request]-> kafka  // env.KAFKA_ADDR
+  fraud_detection -[request]-> flagd  // env.FLAGD_HOST
+  fraud_detection -[request]-> kafka  // env.KAFKA_ADDR
+  frontend -[request]-> ad  // env.AD_ADDR
+  frontend -[request]-> cart  // env.CART_ADDR
+  frontend -[request]-> checkout  // env.CHECKOUT_ADDR
+  frontend -[request]-> currency  // env.CURRENCY_ADDR
+  frontend -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  frontend -[request]-> recommendation  // env.RECOMMENDATION_ADDR
+  frontend -[request]-> shipping  // env.SHIPPING_ADDR
+  frontend -[request]-> flagd  // env.FLAGD_HOST
+  frontend_proxy -[request]-> frontend  // env.FRONTEND_HOST
+  frontend_proxy -[request]-> load_generator  // env.LOCUST_WEB_HOST
+  frontend_proxy -[request]-> image_provider  // env.IMAGE_PROVIDER_HOST
+  frontend_proxy -[request]-> flagd  // env.FLAGD_HOST
+  frontend_proxy -[request]-> flagd_ui  // env.FLAGD_UI_HOST
+  load_generator -[request]-> frontend_proxy  // env.LOCUST_HOST
+  load_generator -[request]-> flagd  // env.FLAGD_HOST
+  payment -[request]-> flagd  // env.FLAGD_HOST
+  product_catalog -[request]-> flagd  // env.FLAGD_HOST
+  recommendation -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  recommendation -[request]-> flagd  // env.FLAGD_HOST
+  shipping -[request]-> quote  // env.QUOTE_ADDR
+  artillery_loadgen -[request]-> frontend  // env.DEMO_URL
+}
+
+specification {
+  element domain
+  element service
+  element event
+  element datastore
+  element infra
+  relationship request
+  relationship publishes
+  relationship consumes
+  relationship reads
+  relationship writes
+}
