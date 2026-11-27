@@ -1,0 +1,490 @@
+// Starter spec, read from the code and traces by portal (no AI).
+// It says what exists. Add what the code can't: domains, your names,
+// rules, and what you plan to build.
+// Conventions: https://portal.haris-d21.workers.dev/skills/portal-architecture/SKILL.md
+model {
+  system = domain 'opentelemetry-demo' {
+    accounting = service 'accounting' {  // docker-compose.yml:21
+      technology 'C#'
+      metadata {
+        code 'src/accounting/**'
+        otel_service 'accounting'
+        resource 'accounting'
+      }
+    }
+    ad = service 'ad' {  // docker-compose.yml:48
+      technology 'Java'
+      metadata {
+        code 'src/ad/**'
+        otel_service 'ad'
+        resource 'ad'
+      }
+    }
+    cart = service 'cart' {  // docker-compose.yml:84
+      technology 'C# · gRPC · REST'
+      metadata {
+        code 'src/cart/src/**'
+        otel_service 'cart'
+        resource 'cart'
+      }
+      cartstore = component 'cartstore' {
+        metadata {
+          code 'src/cart/src/cartstore/**'
+        }
+      }
+      services = component 'services' {
+        metadata {
+          code 'src/cart/src/services/**'
+        }
+      }
+    }
+    checkout = service 'checkout' {  // docker-compose.yml:118
+      technology 'Go · gRPC'
+      metadata {
+        code 'src/checkout/**'
+        otel_service 'checkout'
+        resource 'checkout'
+      }
+      genproto = component 'genproto' {
+        metadata {
+          code 'src/checkout/genproto/**'
+        }
+      }
+      kafka_2 = component 'kafka' {
+        metadata {
+          code 'src/checkout/kafka/**'
+        }
+      }
+      money = component 'money' {
+        metadata {
+          code 'src/checkout/money/**'
+        }
+      }
+    }
+    currency = service 'currency' {  // docker-compose.yml:171
+      technology 'C++ · gRPC'
+      metadata {
+        code 'src/currency/**'
+        otel_service 'currency'
+        resource 'currency'
+      }
+    }
+    email = service 'email' {  // docker-compose.yml:199
+      technology 'Ruby · Sinatra · REST'
+      metadata {
+        code 'src/email/**'
+        otel_service 'email'
+        resource 'email'
+      }
+    }
+    fraud_detection = service 'fraud-detection' {  // docker-compose.yml:226
+      technology 'Kotlin'
+      metadata {
+        code 'src/fraud-detection/**'
+        otel_service 'fraud-detection'
+        resource 'fraud-detection'
+      }
+    }
+    frontend = service 'frontend' {  // docker-compose.yml:259
+      technology 'TypeScript · Next.js · gRPC'
+      metadata {
+        code 'src/frontend/**'
+        otel_service 'frontend'
+        resource 'frontend'
+      }
+      components_2 = component 'components' {
+        metadata {
+          code 'src/frontend/components/**'
+        }
+      }
+      gateways = component 'gateways' {
+        metadata {
+          code 'src/frontend/gateways/**'
+        }
+      }
+      pages = component 'pages' {
+        metadata {
+          code 'src/frontend/pages/**'
+        }
+      }
+      protos = component 'protos' {
+        metadata {
+          code 'src/frontend/protos/**'
+        }
+      }
+      providers = component 'providers' {
+        metadata {
+          code 'src/frontend/providers/**'
+        }
+      }
+      services_2 = component 'services' {
+        metadata {
+          code 'src/frontend/services/**'
+        }
+      }
+      styles = component 'styles' {
+        metadata {
+          code 'src/frontend/styles/**'
+        }
+      }
+      types = component 'types' {
+        metadata {
+          code 'src/frontend/types/**'
+        }
+      }
+      utils_2 = component 'utils' {
+        metadata {
+          code 'src/frontend/utils/**'
+        }
+      }
+    }
+    frontend_proxy = service 'frontend-proxy' {  // docker-compose.yml:326
+      technology 'clickhouse/ch-otel-demo:latest-frontend-proxy'
+      metadata {
+        otel_service 'frontend-proxy'
+        resource 'frontend-proxy'
+      }
+    }
+    image_provider = service 'image-provider' {  // docker-compose.yml:373
+      technology 'clickhouse/ch-otel-demo:latest-image-provider'
+      metadata {
+        otel_service 'image-provider'
+        resource 'image-provider'
+      }
+    }
+    load_generator = service 'load-generator' {  // docker-compose.yml:400
+      technology 'Python · Flask · gRPC'
+      metadata {
+        code 'src/load-generator/**'
+        otel_service 'load-generator'
+        resource 'load-generator'
+      }
+    }
+    payment = service 'payment' {  // docker-compose.yml:438
+      technology 'JavaScript · gRPC'
+      metadata {
+        code 'src/payment/**'
+        otel_service 'payment'
+        resource 'payment'
+      }
+    }
+    product_catalog = service 'product-catalog' {  // docker-compose.yml:472
+      technology 'Go · gRPC'
+      metadata {
+        code 'src/product-catalog/**'
+        otel_service 'product-catalog'
+        resource 'product-catalog'
+      }
+    }
+    quote = service 'quote' {  // docker-compose.yml:507
+      technology 'PHP · Slim'
+      metadata {
+        code 'src/quote/**'
+        otel_service 'quote'
+        resource 'quote'
+      }
+      app_2 = component 'app' {
+        metadata {
+          code 'src/quote/app/*'
+        }
+      }
+      public = component 'public' {
+        metadata {
+          code 'src/quote/public/**'
+        }
+      }
+      Application = component 'Application' {
+        metadata {
+          code 'src/quote/src/Application/**'
+        }
+      }
+    }
+    recommendation = service 'recommendation' {  // docker-compose.yml:535
+      technology 'Python · gRPC'
+      metadata {
+        code 'src/recommendation/**'
+        otel_service 'recommendation'
+        resource 'recommendation'
+      }
+    }
+    shipping = service 'shipping' {  // docker-compose.yml:571
+      technology 'Rust · gRPC'
+      metadata {
+        code 'src/shipping/**'
+        otel_service 'shipping'
+        resource 'shipping'
+      }
+      src_2 = component 'src' {
+        metadata {
+          code 'src/shipping/src/*'
+        }
+      }
+      shipping_service = component 'shipping_service' {
+        metadata {
+          code 'src/shipping/src/shipping_service/**'
+        }
+      }
+      telemetry = component 'telemetry' {
+        metadata {
+          code 'src/shipping/src/telemetry/**'
+        }
+      }
+    }
+    flagd = service 'flagd' {  // docker-compose.yml:601
+      technology 'ghcr.io/open-feature/flagd:v0.12.1'
+      metadata {
+        otel_service 'flagd'
+        resource 'flagd'
+      }
+    }
+    flagd_ui = service 'flagd-ui' {  // docker-compose.yml:629
+      technology 'TypeScript · Next.js'
+      metadata {
+        code 'src/flagd-ui/**'
+        otel_service 'flagd-ui'
+        resource 'flagd-ui'
+      }
+      src = component 'src' {
+        metadata {
+          code 'src/flagd-ui/src/*'
+        }
+      }
+      app = component 'app' {
+        metadata {
+          code 'src/flagd-ui/src/app/**'
+        }
+      }
+      components = component 'components' {
+        metadata {
+          code 'src/flagd-ui/src/components/**'
+        }
+      }
+      utils = component 'utils' {
+        metadata {
+          code 'src/flagd-ui/src/utils/**'
+        }
+      }
+    }
+    kafka = event 'kafka' {  // docker-compose.yml:656
+      technology 'clickhouse/ch-otel-demo:latest-kafka'
+      metadata {
+        resource 'kafka'
+      }
+    }
+    valkey_cart = datastore 'valkey-cart' {  // docker-compose.yml:689
+      technology 'valkey/valkey:8.1-alpine'
+      metadata {
+        resource 'valkey-cart'
+      }
+    }
+    grafana = infra 'grafana' {  // docker-compose.yml:707
+      technology 'grafana/grafana:11.5.2'
+      metadata {
+        resource 'grafana'
+      }
+    }
+    db = datastore 'db' {  // docker-compose.yml:725
+      technology 'mongo:5.0.14-focal'
+      metadata {
+        resource 'db'
+      }
+    }
+    otel_collector = infra 'otel-collector' {  // docker-compose.yml:733
+      technology 'ghcr.io/hyperdxio/hyperdx-otel-collector:2-beta.16'
+      metadata {
+        resource 'otel-collector'
+      }
+    }
+    hyperdx = infra 'hyperdx' {  // docker-compose.yml:768
+      technology 'docker.hyperdx.io/hyperdx/hyperdx:2-beta.16'
+      metadata {
+        resource 'hyperdx'
+      }
+    }
+    clickhouse = datastore 'clickhouse' {  // docker-compose.yml:790
+      technology 'clickhouse/clickhouse-server:24-alpine'
+      metadata {
+        resource 'clickhouse'
+      }
+    }
+    artillery_loadgen = service 'artillery-loadgen' {  // docker-compose.yml:810
+      technology 'JavaScript'
+      metadata {
+        code 'src/artillery-load-generator/**'
+        otel_service 'artillery-loadgen'
+        resource 'artillery-loadgen'
+      }
+    }
+    tools = service 'tools' {  // internal/tools/go.mod:1
+      technology 'Go'
+      metadata {
+        code 'internal/tools/**'
+        otel_service 'tools'
+        resource 'tools'
+      }
+    }
+    genproto_2 = service 'genproto' {  // src/currency/genproto/CMakeLists.txt:1
+      technology 'C++'
+      metadata {
+        code 'src/currency/genproto/**'
+        otel_service 'genproto'
+        resource 'genproto'
+      }
+    }
+    reactnativeapp = service 'reactnativeapp' {  // src/react-native-app/package.json:1
+      technology 'TypeScript'
+      metadata {
+        code 'src/react-native-app/**'
+        otel_service 'reactnativeapp'
+        resource 'reactnativeapp'
+      }
+      app_3 = component 'app' {
+        metadata {
+          code 'src/react-native-app/app/*'
+        }
+      }
+      tabs = component '(tabs)' {
+        metadata {
+          code 'src/react-native-app/app/(tabs)/**'
+        }
+      }
+      components_3 = component 'components' {
+        metadata {
+          code 'src/react-native-app/components/**'
+        }
+      }
+      constants = component 'constants' {
+        metadata {
+          code 'src/react-native-app/constants/**'
+        }
+      }
+      gateways_2 = component 'gateways' {
+        metadata {
+          code 'src/react-native-app/gateways/**'
+        }
+      }
+      hooks = component 'hooks' {
+        metadata {
+          code 'src/react-native-app/hooks/**'
+        }
+      }
+      protos_2 = component 'protos' {
+        metadata {
+          code 'src/react-native-app/protos/**'
+        }
+      }
+      providers_2 = component 'providers' {
+        metadata {
+          code 'src/react-native-app/providers/**'
+        }
+      }
+      types_2 = component 'types' {
+        metadata {
+          code 'src/react-native-app/types/**'
+        }
+      }
+      utils_3 = component 'utils' {
+        metadata {
+          code 'src/react-native-app/utils/**'
+        }
+      }
+    }
+  }
+
+  accounting -[request]-> kafka  // env.KAFKA_ADDR
+  ad -[request]-> flagd  // env.FLAGD_HOST
+  cart -[request]-> flagd  // env.FLAGD_HOST
+  cart -> valkey_cart  // reads or writes? say which: -[reads]-> or -[writes]->
+  checkout -[request]-> flagd  // env.FLAGD_HOST
+  checkout -[request]-> cart  // env.CART_ADDR
+  checkout -[request]-> currency  // env.CURRENCY_ADDR
+  checkout -[request]-> email  // env.EMAIL_ADDR
+  checkout -[request]-> payment  // env.PAYMENT_ADDR
+  checkout -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  checkout -[request]-> shipping  // env.SHIPPING_ADDR
+  checkout -[request]-> kafka  // env.KAFKA_ADDR
+  fraud_detection -[request]-> flagd  // env.FLAGD_HOST
+  fraud_detection -[request]-> kafka  // env.KAFKA_ADDR
+  frontend -[request]-> ad  // env.AD_ADDR
+  frontend -[request]-> cart  // env.CART_ADDR
+  frontend -[request]-> checkout  // env.CHECKOUT_ADDR
+  frontend -[request]-> currency  // env.CURRENCY_ADDR
+  frontend -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  frontend -[request]-> recommendation  // env.RECOMMENDATION_ADDR
+  frontend -[request]-> shipping  // env.SHIPPING_ADDR
+  frontend -[request]-> flagd  // env.FLAGD_HOST
+  frontend_proxy -[request]-> frontend  // env.FRONTEND_HOST
+  frontend_proxy -[request]-> load_generator  // env.LOCUST_WEB_HOST
+  frontend_proxy -[request]-> image_provider  // env.IMAGE_PROVIDER_HOST
+  frontend_proxy -[request]-> flagd  // env.FLAGD_HOST
+  frontend_proxy -[request]-> flagd_ui  // env.FLAGD_UI_HOST
+  load_generator -[request]-> frontend_proxy  // env.LOCUST_HOST
+  load_generator -[request]-> flagd  // env.FLAGD_HOST
+  payment -[request]-> flagd  // env.FLAGD_HOST
+  product_catalog -[request]-> flagd  // env.FLAGD_HOST
+  recommendation -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  recommendation -[request]-> flagd  // env.FLAGD_HOST
+  shipping -[request]-> quote  // env.QUOTE_ADDR
+  artillery_loadgen -[request]-> frontend  // env.DEMO_URL
+  money -> genproto
+  app -> components
+  components -> utils
+  components_2 -> gateways
+  components_2 -> protos
+  components_2 -> providers
+  components_2 -> styles
+  components_2 -> types
+  components_2 -> utils_2
+  gateways -> protos
+  gateways -> types
+  gateways -> utils_2
+  pages -> components_2
+  pages -> gateways
+  pages -> protos
+  pages -> providers
+  pages -> services_2
+  pages -> styles
+  pages -> types
+  pages -> utils_2
+  providers -> gateways
+  providers -> protos
+  providers -> types
+  services_2 -> gateways
+  services_2 -> protos
+  styles -> components_2
+  types -> protos
+  app_3 -> hooks
+  app_3 -> providers_2
+  tabs -> components_3
+  tabs -> gateways_2
+  tabs -> hooks
+  tabs -> providers_2
+  components_3 -> hooks
+  components_3 -> protos_2
+  components_3 -> providers_2
+  components_3 -> utils_3
+  gateways_2 -> protos_2
+  gateways_2 -> types_2
+  gateways_2 -> utils_3
+  hooks -> constants
+  hooks -> utils_3
+  providers_2 -> gateways_2
+  providers_2 -> protos_2
+  providers_2 -> types_2
+  types_2 -> protos_2
+  utils_3 -> gateways_2
+}
+
+specification {
+  element domain
+  element service
+  element event
+  element datastore
+  element infra
+  element component
+  relationship request
+  relationship publishes
+  relationship consumes
+  relationship reads
+  relationship writes
+}
